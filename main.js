@@ -5,8 +5,8 @@
 import { createState, Screen, player } from './engine/state.js';
 import { createRng } from './engine/rng.js';
 import { createLoop } from './engine/loop.js';
-import { createCar, stepCar } from './engine/physics.js';
-import { aiControls } from './engine/ai.js';
+import { createCar, stepCar, constrainToTrack } from './engine/physics.js';
+import { aiControls, normalizeAngle } from './engine/ai.js';
 import { advanceProgress, finishOrder, snapshot, resume } from './engine/race.js';
 import { createTokens, checkCollect, consume, respawnAll } from './engine/tokens.js';
 import { selectNext, present, grade } from './engine/quiz.js';
@@ -104,6 +104,7 @@ function startRace() {
   });
   state.tokens = createTokens(t);
   state.hazards = [];
+  state.missiles = [];
   state.raceTimeMs = 0;
   state.finishCount = 0;
   state.questionsAsked = 0;
@@ -157,9 +158,20 @@ function useItem() {
       expiresAt: now + 8000,
     });
   } else {
-    // homing_missile
+    // homing_missile: launch a projectile that flies toward the nearest opponent and
+    // applies its spin on impact (engine/items.js handles the shield cancel there).
     const target = nearestOpponent(p);
-    if (target) applyEffect(def, p, target, now);
+    if (target) {
+      state.missiles.push({
+        x: p.pos.x + Math.cos(p.heading) * 14,
+        y: p.pos.y + Math.sin(p.heading) * 14,
+        heading: p.heading,
+        speed: 520,
+        targetId: target.id,
+        owner: p.id,
+        expiresAt: now + 4000, // safety lifetime if it never connects
+      });
+    }
   }
   updateHudFromState();
 }
@@ -266,6 +278,7 @@ function update(dtMs) {
       car.speed *= Math.pow(0.85, dt);
       car.pos.x += Math.cos(car.heading) * car.speed * dt;
       car.pos.y += Math.sin(car.heading) * car.speed * dt;
+      constrainToTrack(car, t);
       continue;
     }
     const mods = effectMods(car);
@@ -278,6 +291,7 @@ function update(dtMs) {
     }
     const prev = { x: car.pos.x, y: car.pos.y };
     stepCar(car, controls, dt, mods);
+    constrainToTrack(car, t); // hard wall: keep the car on the road
     const res = advanceProgress(car, prev, t);
     if (res.lapCompleted) onLap(car, now);
 
@@ -293,6 +307,25 @@ function update(dtMs) {
       }
     }
   }
+
+  // Homing missiles in flight (US3): steer toward the live target, spin it on impact.
+  state.missiles = (state.missiles || []).filter((m) => m.expiresAt > now);
+  for (const m of state.missiles) {
+    const target = state.cars.find((c) => c.id === m.targetId && !c.finished);
+    if (target) {
+      const desired = Math.atan2(target.pos.y - m.y, target.pos.x - m.x);
+      const maxTurn = 6 * dt; // homing agility (rad/s)
+      m.heading += Math.max(-maxTurn, Math.min(maxTurn, normalizeAngle(desired - m.heading)));
+    }
+    m.x += Math.cos(m.heading) * m.speed * dt;
+    m.y += Math.sin(m.heading) * m.speed * dt;
+    if (target && Math.hypot(target.pos.x - m.x, target.pos.y - m.y) < 16) {
+      const owner = state.cars.find((c) => c.id === m.owner) || null;
+      applyEffect(powerMap.homing_missile, owner, target, now); // shield cancel handled here
+      m.expiresAt = 0; // consumed
+    }
+  }
+  state.missiles = state.missiles.filter((m) => m.expiresAt > now);
 
   // Player collects a token -> pause for a question (FR-013: ignored while one is open).
   const p = player(state);

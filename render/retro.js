@@ -63,6 +63,28 @@ export function drawCar(ctx, car, color) {
   ctx.restore();
 }
 
+// A small homing-missile projectile with a flickering exhaust trail, pointing along heading.
+export function drawMissile(ctx, m, t) {
+  ctx.save();
+  ctx.translate(m.x, m.y);
+  ctx.rotate(m.heading);
+  // exhaust trail
+  ctx.strokeStyle = PALETTE.boost;
+  ctx.globalAlpha = 0.6;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(-6, 0);
+  ctx.lineTo(-16 - Math.abs(Math.sin(t / 40)) * 6, 0);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+  // body + nose
+  ctx.fillStyle = PALETTE.missile;
+  ctx.fillRect(-6, -3, 12, 6);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(4, -2, 4, 4);
+  ctx.restore();
+}
+
 export function drawToken(ctx, p, t) {
   const pulse = 4 + Math.sin(t / 150) * 2;
   ctx.save();

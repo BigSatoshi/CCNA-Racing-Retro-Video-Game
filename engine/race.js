@@ -55,6 +55,7 @@ export function snapshot(state) {
     rngState: state.rng.getState(),
     cars: state.cars.map((c) => structuredClone(c)),
     tokens: state.tokens ? state.tokens.map((t) => structuredClone(t)) : null,
+    missiles: state.missiles ? state.missiles.map((m) => structuredClone(m)) : null,
   };
 }
 
@@ -63,5 +64,6 @@ export function resume(state, snap) {
   state.rng.setState(snap.rngState);
   state.cars = snap.cars.map((c) => structuredClone(c));
   if (snap.tokens) state.tokens = snap.tokens.map((t) => structuredClone(t));
+  if (snap.missiles) state.missiles = snap.missiles.map((m) => structuredClone(m));
   return state;
 }

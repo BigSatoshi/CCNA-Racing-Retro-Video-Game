@@ -1,5 +1,5 @@
 // Canvas 2D rendering only (T017, T033, T039). Draws state; makes no game decisions.
-import { PALETTE, drawBackground, drawCar, drawToken } from './retro.js';
+import { PALETTE, drawBackground, drawCar, drawToken, drawMissile } from './retro.js';
 
 function tracePath(ctx, path) {
   ctx.beginPath();
@@ -63,4 +63,7 @@ export function render(ctx, state, now) {
     const color = car.isPlayer ? PALETTE.player : PALETTE.cpu[cpu++ % PALETTE.cpu.length];
     drawCar(ctx, car, color);
   }
+
+  // Homing missiles in flight (drawn over cars).
+  for (const m of state.missiles ?? []) drawMissile(ctx, m, now);
 }

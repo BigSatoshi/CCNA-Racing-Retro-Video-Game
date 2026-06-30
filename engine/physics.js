@@ -51,3 +51,42 @@ export function stepCar(car, controls, dtSec, mods = {}) {
   car.pos.y += Math.sin(car.heading) * car.speed * dtSec;
   return car;
 }
+
+// Closest point to p on segment a->b (clamped to the segment ends).
+function closestPointOnSeg(p, a, b) {
+  const abx = b.x - a.x;
+  const aby = b.y - a.y;
+  const len2 = abx * abx + aby * aby || 1;
+  let t = ((p.x - a.x) * abx + (p.y - a.y) * aby) / len2;
+  t = Math.max(0, Math.min(1, t));
+  return { x: a.x + abx * t, y: a.y + aby * t };
+}
+
+// Hard track boundary (T013): the road is everything within track.width/2 of the closed
+// centerline polyline. If a car's center strays past that (minus a small body margin), push
+// it back onto the edge along the inward normal and bleed speed — a wall it can slide along.
+export function constrainToTrack(car, track, margin = 6) {
+  const path = track.path;
+  const maxDist = track.width / 2 - margin;
+  let best = null;
+  let bestD2 = Infinity;
+  for (let i = 0; i < path.length; i++) {
+    const c = closestPointOnSeg(car.pos, path[i], path[(i + 1) % path.length]);
+    const dx = car.pos.x - c.x;
+    const dy = car.pos.y - c.y;
+    const d2 = dx * dx + dy * dy;
+    if (d2 < bestD2) {
+      bestD2 = d2;
+      best = c;
+    }
+  }
+  const dist = Math.sqrt(bestD2) || 1;
+  if (dist > maxDist) {
+    const nx = (car.pos.x - best.x) / dist;
+    const ny = (car.pos.y - best.y) / dist;
+    car.pos.x = best.x + nx * maxDist;
+    car.pos.y = best.y + ny * maxDist;
+    car.speed *= 0.4; // scrape: bleed speed on wall contact
+  }
+  return car;
+}
