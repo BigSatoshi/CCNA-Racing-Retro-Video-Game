@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ccna-racing/track.schema.json",
+  "title": "Track Definition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "lapsToWin", "path", "width", "startLine", "checkpoints", "startGrid", "tokenSpawns", "aiWaypoints"],
+  "$defs": {
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": { "x": { "type": "number" }, "y": { "type": "number" } }
+    },
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a", "b"],
+      "properties": {
+        "a": { "$ref": "#/$defs/point" },
+        "b": { "$ref": "#/$defs/point" }
+      }
+    }
+  },
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "lapsToWin": { "type": "integer", "minimum": 1 },
+    "path": { "type": "array", "minItems": 3, "items": { "$ref": "#/$defs/point" } },
+    "width": { "type": "number", "exclusiveMinimum": 0 },
+    "startLine": { "$ref": "#/$defs/segment" },
+    "checkpoints": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/segment" } },
+    "startGrid": { "type": "array", "minItems": 4, "items": { "$ref": "#/$defs/point" } },
+    "tokenSpawns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/point" } },
+    "aiWaypoints": { "type": "array", "minItems": 3, "items": { "$ref": "#/$defs/point" } }
+  }
+}

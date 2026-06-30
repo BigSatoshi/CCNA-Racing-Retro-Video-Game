@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CCNA Racing — Retro</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Loading -->
+      <section id="screen-loading" class="screen is-active">
+        <div class="panel">
+          <h1 class="logo">CCNA&nbsp;RACING</h1>
+          <p class="blink">LOADING…</p>
+        </div>
+      </section>
+
+      <!-- Error -->
+      <section id="screen-error" class="screen">
+        <div class="panel">
+          <h1 class="logo error">! ERROR !</h1>
+          <p id="error-msg" class="muted"></p>
+          <button id="btn-retry" class="btn">RETRY</button>
+        </div>
+      </section>
+
+      <!-- Start -->
+      <section id="screen-start" class="screen">
+        <div class="panel">
+          <h1 class="logo">CCNA&nbsp;RACING</h1>
+          <p class="tag">retro racing &mdash; powered by networking knowledge</p>
+          <ul class="howto">
+            <li><b>Arrows / WASD</b> &mdash; drive</li>
+            <li><b>Space / F</b> &mdash; use a power-up</li>
+            <li>Grab <b>?</b> tokens, answer a CCNA question, win a power-up</li>
+            <li>First across <b>3 laps</b> wins</li>
+          </ul>
+          <button id="btn-start" class="btn primary">START RACE</button>
+          <p id="best-lap" class="muted small"></p>
+        </div>
+      </section>
+
+      <!-- Game -->
+      <section id="screen-game" class="screen">
+        <div id="stage">
+          <canvas id="game-canvas" width="1000" height="700" aria-label="Race track"></canvas>
+          <div id="hud">
+            <div class="hud-row"><span class="hud-label">LAP</span> <span id="hud-lap">1/3</span></div>
+            <div class="hud-row"><span class="hud-label">POS</span> <span id="hud-pos">1/4</span></div>
+            <div class="hud-row"><span class="hud-label">TIME</span> <span id="hud-time">0.0</span></div>
+            <div class="hud-row"><span class="hud-label">ITEM</span> <span id="hud-inv">—</span></div>
+            <div class="hud-row"><span id="hud-effects" class="muted small"></span></div>
+          </div>
+          <!-- Accessible question dialog gets injected here -->
+          <div id="overlay-root" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- Result -->
+      <section id="screen-result" class="screen">
+        <div class="panel">
+          <h1 id="result-title" class="logo">FINISH</h1>
+          <p id="result-detail" class="tag"></p>
+          <ol id="result-order" class="result-order"></ol>
+          <button id="btn-again" class="btn primary">RACE AGAIN</button>
+          <button id="btn-menu" class="btn">MENU</button>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

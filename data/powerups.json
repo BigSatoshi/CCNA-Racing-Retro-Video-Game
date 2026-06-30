@@ -1,0 +1,34 @@
+[
+  {
+    "id": "speed_boost",
+    "name": "Speed Boost",
+    "kind": "self",
+    "durationMs": 2500,
+    "params": { "speedMultiplier": 1.5 },
+    "icon": "boost"
+  },
+  {
+    "id": "shield",
+    "name": "Shield",
+    "kind": "self",
+    "durationMs": 6000,
+    "params": {},
+    "icon": "shield"
+  },
+  {
+    "id": "oil_slick",
+    "name": "Oil Slick",
+    "kind": "offense",
+    "durationMs": 1500,
+    "params": { "spinMs": 1300 },
+    "icon": "oil"
+  },
+  {
+    "id": "homing_missile",
+    "name": "Homing Missile",
+    "kind": "offense",
+    "durationMs": 1200,
+    "params": { "spinMs": 1100 },
+    "icon": "missile"
+  }
+]

@@ -1,0 +1,17 @@
+# Dependencies (none shipped, but guard against local tooling)
+node_modules/
+
+# Build / dist (no build step, kept for safety)
+dist/
+build/
+
+# Logs & env
+*.log
+.env*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.idea/

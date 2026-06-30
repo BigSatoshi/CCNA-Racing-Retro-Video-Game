@@ -1,0 +1,422 @@
+[
+  {
+    "id": "subnet-001",
+    "topic": "subnetting",
+    "difficulty": "easy",
+    "prompt": "How many usable host addresses are in a /26 subnet?",
+    "options": ["62", "64", "30", "126"],
+    "correctIndex": 0,
+    "explanation": "A /26 leaves 6 host bits: 2^6 = 64 addresses, minus the network and broadcast = 62 usable hosts.",
+    "source": "Cisco CCNA 200-301 OCG, Subnetting"
+  },
+  {
+    "id": "subnet-002",
+    "topic": "subnetting",
+    "difficulty": "easy",
+    "prompt": "What is the default subnet mask for a Class C network?",
+    "options": ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.255"],
+    "correctIndex": 2,
+    "explanation": "Class C uses the first 24 bits for the network portion, giving 255.255.255.0 (/24).",
+    "source": "RFC 791 / Cisco CCNA addressing"
+  },
+  {
+    "id": "subnet-003",
+    "topic": "subnetting",
+    "difficulty": "medium",
+    "prompt": "To divide 192.168.1.0/24 into 4 equal subnets, how many host bits must be borrowed?",
+    "options": ["1", "2", "3", "4"],
+    "correctIndex": 1,
+    "explanation": "2 borrowed bits create 2^2 = 4 subnets (each becomes a /26).",
+    "source": "Cisco CCNA 200-301 OCG, Subnetting"
+  },
+  {
+    "id": "subnet-004",
+    "topic": "subnetting",
+    "difficulty": "easy",
+    "prompt": "How many usable host addresses does a /30 subnet provide?",
+    "options": ["4", "2", "1", "6"],
+    "correctIndex": 1,
+    "explanation": "/30 has 2 host bits = 4 addresses, minus network and broadcast = 2 usable, ideal for point-to-point links.",
+    "source": "RFC 3021 / Cisco CCNA"
+  },
+  {
+    "id": "subnet-005",
+    "topic": "subnetting",
+    "difficulty": "medium",
+    "prompt": "Which CIDR prefix length corresponds to the mask 255.255.255.240?",
+    "options": ["/26", "/27", "/28", "/29"],
+    "correctIndex": 2,
+    "explanation": "240 = 11110000, so 4 bits in the last octet are network bits: 24 + 4 = /28.",
+    "source": "Cisco CCNA 200-301 OCG, VLSM"
+  },
+  {
+    "id": "subnet-006",
+    "topic": "subnetting",
+    "difficulty": "medium",
+    "prompt": "What is the broadcast address of 172.16.5.0/24?",
+    "options": ["172.16.5.1", "172.16.5.255", "172.16.255.255", "172.16.5.0"],
+    "correctIndex": 1,
+    "explanation": "For a /24, all host bits set to 1 in the last octet gives the broadcast 172.16.5.255.",
+    "source": "Cisco CCNA addressing"
+  },
+  {
+    "id": "subnet-007",
+    "topic": "subnetting",
+    "difficulty": "hard",
+    "prompt": "In which subnet does host 192.168.10.70/26 reside?",
+    "options": ["192.168.10.0/26", "192.168.10.64/26", "192.168.10.32/26", "192.168.10.128/26"],
+    "correctIndex": 1,
+    "explanation": "/26 blocks increment by 64: 0, 64, 128, 192. Address .70 falls in the 64-127 block, so 192.168.10.64/26.",
+    "source": "Cisco CCNA 200-301 OCG, Subnetting"
+  },
+  {
+    "id": "route-001",
+    "topic": "routing",
+    "difficulty": "easy",
+    "prompt": "What is the default administrative distance of OSPF on a Cisco router?",
+    "options": ["90", "100", "110", "120"],
+    "correctIndex": 2,
+    "explanation": "OSPF's default administrative distance is 110.",
+    "source": "Cisco IOS administrative distance table"
+  },
+  {
+    "id": "route-002",
+    "topic": "routing",
+    "difficulty": "easy",
+    "prompt": "What is the default administrative distance of internal EIGRP routes?",
+    "options": ["90", "110", "120", "1"],
+    "correctIndex": 0,
+    "explanation": "Internal EIGRP routes have an administrative distance of 90 (external EIGRP is 170).",
+    "source": "Cisco IOS administrative distance table"
+  },
+  {
+    "id": "route-003",
+    "topic": "routing",
+    "difficulty": "easy",
+    "prompt": "What is the default administrative distance of a static route to a next-hop IP?",
+    "options": ["0", "1", "5", "20"],
+    "correctIndex": 1,
+    "explanation": "A static route has an administrative distance of 1 by default (a directly connected route is 0).",
+    "source": "Cisco IOS administrative distance table"
+  },
+  {
+    "id": "route-004",
+    "topic": "routing",
+    "difficulty": "medium",
+    "prompt": "Which routing protocol is a link-state protocol?",
+    "options": ["RIP", "OSPF", "EIGRP", "BGP"],
+    "correctIndex": 1,
+    "explanation": "OSPF is link-state. RIP is distance-vector, EIGRP is advanced distance-vector, and BGP is a path-vector protocol.",
+    "source": "Cisco CCNA 200-301 OCG, Routing protocols"
+  },
+  {
+    "id": "route-005",
+    "topic": "routing",
+    "difficulty": "hard",
+    "prompt": "A router has routes 0.0.0.0/0, 10.0.0.0/8, and 10.1.0.0/16. Which is used to reach 10.1.1.5?",
+    "options": ["0.0.0.0/0", "10.0.0.0/8", "10.1.0.0/16", "None; the packet is dropped"],
+    "correctIndex": 2,
+    "explanation": "Routers use longest-prefix match; 10.1.0.0/16 is the most specific route that matches 10.1.1.5.",
+    "source": "RFC 1812 / Cisco CCNA routing"
+  },
+  {
+    "id": "route-006",
+    "topic": "routing",
+    "difficulty": "medium",
+    "prompt": "What is the maximum hop count that RIP considers reachable?",
+    "options": ["15", "16", "100", "255"],
+    "correctIndex": 0,
+    "explanation": "RIP treats 15 as the maximum usable hop count; 16 is considered infinite/unreachable.",
+    "source": "RFC 2453 (RIPv2)"
+  },
+  {
+    "id": "route-007",
+    "topic": "routing",
+    "difficulty": "easy",
+    "prompt": "Which IOS command displays the router's IPv4 routing table?",
+    "options": ["show ip interface brief", "show ip route", "show running-config", "show ip protocols"],
+    "correctIndex": 1,
+    "explanation": "'show ip route' displays the IPv4 routing table and its sources.",
+    "source": "Cisco IOS command reference"
+  },
+  {
+    "id": "switch-001",
+    "topic": "switching",
+    "difficulty": "easy",
+    "prompt": "What is the default VLAN on a Cisco Catalyst switch?",
+    "options": ["VLAN 0", "VLAN 1", "VLAN 99", "VLAN 1024"],
+    "correctIndex": 1,
+    "explanation": "All access ports belong to VLAN 1 by default until reconfigured.",
+    "source": "Cisco CCNA 200-301 OCG, VLANs"
+  },
+  {
+    "id": "switch-002",
+    "topic": "switching",
+    "difficulty": "easy",
+    "prompt": "Which protocol prevents Layer 2 switching loops?",
+    "options": ["STP", "VTP", "CDP", "HSRP"],
+    "correctIndex": 0,
+    "explanation": "Spanning Tree Protocol (STP, IEEE 802.1D) blocks redundant paths to prevent Layer 2 loops.",
+    "source": "IEEE 802.1D / Cisco CCNA"
+  },
+  {
+    "id": "switch-003",
+    "topic": "switching",
+    "difficulty": "easy",
+    "prompt": "A switch forwards a frame based on which address?",
+    "options": ["Source IP address", "Destination IP address", "Destination MAC address", "Source MAC address"],
+    "correctIndex": 2,
+    "explanation": "Switches make forwarding decisions using the destination MAC address and their MAC address table.",
+    "source": "Cisco CCNA 200-301 OCG, Switching"
+  },
+  {
+    "id": "switch-004",
+    "topic": "switching",
+    "difficulty": "medium",
+    "prompt": "What does a switch do with an unknown unicast frame?",
+    "options": ["Drops it", "Floods it out all ports except the one it arrived on", "Sends it only to the default gateway", "Returns it to the sender"],
+    "correctIndex": 1,
+    "explanation": "With no MAC table entry for the destination, the switch floods the frame out all ports except the ingress port.",
+    "source": "Cisco CCNA 200-301 OCG, Switching"
+  },
+  {
+    "id": "switch-005",
+    "topic": "switching",
+    "difficulty": "medium",
+    "prompt": "Which IEEE standard is used for VLAN trunking (frame tagging)?",
+    "options": ["802.1D", "802.1Q", "802.3", "802.11"],
+    "correctIndex": 1,
+    "explanation": "IEEE 802.1Q inserts a VLAN tag into Ethernet frames on trunk links.",
+    "source": "IEEE 802.1Q"
+  },
+  {
+    "id": "switch-006",
+    "topic": "switching",
+    "difficulty": "medium",
+    "prompt": "By default, which VLAN is the native VLAN on an 802.1Q trunk?",
+    "options": ["VLAN 1", "VLAN 0", "VLAN 99", "VLAN 4094"],
+    "correctIndex": 0,
+    "explanation": "The native VLAN is VLAN 1 by default; its traffic is sent untagged across the trunk.",
+    "source": "Cisco CCNA 200-301 OCG, Trunking"
+  },
+  {
+    "id": "switch-007",
+    "topic": "switching",
+    "difficulty": "hard",
+    "prompt": "In STP, what is the role of the single port on a non-root switch that leads toward the root bridge?",
+    "options": ["Designated port", "Root port", "Blocking port", "Alternate port"],
+    "correctIndex": 1,
+    "explanation": "Each non-root switch elects one root port: the lowest-cost path toward the root bridge.",
+    "source": "IEEE 802.1D / Cisco CCNA STP"
+  },
+  {
+    "id": "osi-001",
+    "topic": "osi-tcpip",
+    "difficulty": "easy",
+    "prompt": "At which OSI layer does IP addressing and routing operate?",
+    "options": ["Layer 2 (Data Link)", "Layer 3 (Network)", "Layer 4 (Transport)", "Layer 7 (Application)"],
+    "correctIndex": 1,
+    "explanation": "IP addressing and routing are functions of Layer 3, the Network layer.",
+    "source": "ISO/IEC 7498-1 OSI model"
+  },
+  {
+    "id": "osi-002",
+    "topic": "osi-tcpip",
+    "difficulty": "easy",
+    "prompt": "MAC addresses operate at which OSI layer?",
+    "options": ["Layer 1 (Physical)", "Layer 2 (Data Link)", "Layer 3 (Network)", "Layer 4 (Transport)"],
+    "correctIndex": 1,
+    "explanation": "MAC addressing is part of the Data Link layer (Layer 2).",
+    "source": "ISO/IEC 7498-1 OSI model"
+  },
+  {
+    "id": "osi-003",
+    "topic": "osi-tcpip",
+    "difficulty": "medium",
+    "prompt": "What is the name of the Protocol Data Unit (PDU) at the Transport layer?",
+    "options": ["Frame", "Packet", "Segment", "Bit"],
+    "correctIndex": 2,
+    "explanation": "The Transport layer PDU is the segment (TCP) or datagram (UDP).",
+    "source": "Cisco CCNA 200-301 OCG, OSI model"
+  },
+  {
+    "id": "osi-004",
+    "topic": "osi-tcpip",
+    "difficulty": "easy",
+    "prompt": "A traditional router primarily operates at which OSI layer?",
+    "options": ["Layer 1", "Layer 2", "Layer 3", "Layer 5"],
+    "correctIndex": 2,
+    "explanation": "Routers forward packets using Layer 3 (Network layer) IP addressing.",
+    "source": "Cisco CCNA 200-301 OCG"
+  },
+  {
+    "id": "osi-005",
+    "topic": "osi-tcpip",
+    "difficulty": "medium",
+    "prompt": "The TCP/IP model's Application layer maps to which OSI layers?",
+    "options": ["Application, Presentation, and Session", "Transport and Network", "Physical and Data Link", "Session and Transport"],
+    "correctIndex": 0,
+    "explanation": "The TCP/IP Application layer combines the OSI Application, Presentation, and Session layers.",
+    "source": "RFC 1122 / Cisco CCNA"
+  },
+  {
+    "id": "osi-006",
+    "topic": "osi-tcpip",
+    "difficulty": "easy",
+    "prompt": "Which device operates purely at OSI Layer 1?",
+    "options": ["Switch", "Router", "Hub", "Firewall"],
+    "correctIndex": 2,
+    "explanation": "A hub simply repeats electrical signals to all ports, a Layer 1 (Physical) function.",
+    "source": "Cisco CCNA 200-301 OCG"
+  },
+  {
+    "id": "osi-007",
+    "topic": "osi-tcpip",
+    "difficulty": "medium",
+    "prompt": "What is the PDU at the Network layer?",
+    "options": ["Segment", "Packet", "Frame", "Bit"],
+    "correctIndex": 1,
+    "explanation": "The Network layer PDU is the packet.",
+    "source": "Cisco CCNA 200-301 OCG, OSI model"
+  },
+  {
+    "id": "proto-001",
+    "topic": "protocols",
+    "difficulty": "easy",
+    "prompt": "Which TCP port does HTTPS use by default?",
+    "options": ["80", "443", "8080", "22"],
+    "correctIndex": 1,
+    "explanation": "HTTPS (HTTP over TLS) uses TCP port 443 by default.",
+    "source": "IANA port registry"
+  },
+  {
+    "id": "proto-002",
+    "topic": "protocols",
+    "difficulty": "easy",
+    "prompt": "Which TCP port does SSH use by default?",
+    "options": ["23", "21", "22", "25"],
+    "correctIndex": 2,
+    "explanation": "SSH listens on TCP port 22 by default.",
+    "source": "IANA port registry / RFC 4251"
+  },
+  {
+    "id": "proto-003",
+    "topic": "protocols",
+    "difficulty": "easy",
+    "prompt": "Which port number is primarily used by DNS?",
+    "options": ["53", "67", "80", "143"],
+    "correctIndex": 0,
+    "explanation": "DNS uses port 53 (UDP for most queries, TCP for zone transfers and large responses).",
+    "source": "RFC 1035 / IANA"
+  },
+  {
+    "id": "proto-004",
+    "topic": "protocols",
+    "difficulty": "medium",
+    "prompt": "What is the correct order of the DHCP DORA process?",
+    "options": ["Discover, Offer, Request, Acknowledge", "Offer, Discover, Acknowledge, Request", "Request, Offer, Discover, Acknowledge", "Discover, Request, Offer, Acknowledge"],
+    "correctIndex": 0,
+    "explanation": "DHCP follows Discover, Offer, Request, Acknowledge (DORA).",
+    "source": "RFC 2131 (DHCP)"
+  },
+  {
+    "id": "proto-005",
+    "topic": "protocols",
+    "difficulty": "easy",
+    "prompt": "Which protocol resolves an IPv4 address to a MAC address?",
+    "options": ["DNS", "ARP", "DHCP", "ICMP"],
+    "correctIndex": 1,
+    "explanation": "ARP (Address Resolution Protocol) maps a known IPv4 address to its MAC address.",
+    "source": "RFC 826 (ARP)"
+  },
+  {
+    "id": "proto-006",
+    "topic": "protocols",
+    "difficulty": "easy",
+    "prompt": "Which transport protocol is connectionless and has no built-in reliability?",
+    "options": ["TCP", "UDP", "IP", "HTTP"],
+    "correctIndex": 1,
+    "explanation": "UDP is connectionless with no acknowledgements, sequencing, or retransmission.",
+    "source": "RFC 768 (UDP)"
+  },
+  {
+    "id": "proto-007",
+    "topic": "protocols",
+    "difficulty": "medium",
+    "prompt": "Which TCP port does FTP use for control connections?",
+    "options": ["20", "21", "22", "69"],
+    "correctIndex": 1,
+    "explanation": "FTP uses TCP port 21 for control and port 20 for active-mode data transfer.",
+    "source": "RFC 959 (FTP)"
+  },
+  {
+    "id": "sec-001",
+    "topic": "security",
+    "difficulty": "easy",
+    "prompt": "In the AAA framework, what does the first 'A' stand for?",
+    "options": ["Authentication", "Authorization", "Accounting", "Auditing"],
+    "correctIndex": 0,
+    "explanation": "AAA = Authentication, Authorization, and Accounting; authentication verifies identity first.",
+    "source": "Cisco CCNA 200-301 OCG, Security"
+  },
+  {
+    "id": "sec-002",
+    "topic": "security",
+    "difficulty": "medium",
+    "prompt": "What is the default action of a port-security violation on a Cisco switch?",
+    "options": ["Protect", "Restrict", "Shutdown (err-disabled)", "Log only"],
+    "correctIndex": 2,
+    "explanation": "The default violation mode is shutdown, which puts the port into the err-disabled state.",
+    "source": "Cisco CCNA 200-301 OCG, Port Security"
+  },
+  {
+    "id": "sec-003",
+    "topic": "security",
+    "difficulty": "easy",
+    "prompt": "Which protocol provides encrypted remote CLI access, replacing Telnet?",
+    "options": ["Telnet", "SSH", "HTTP", "SNMPv1"],
+    "correctIndex": 1,
+    "explanation": "SSH encrypts the management session, unlike Telnet which sends data in clear text.",
+    "source": "RFC 4251 / Cisco CCNA"
+  },
+  {
+    "id": "sec-004",
+    "topic": "security",
+    "difficulty": "medium",
+    "prompt": "Which feature mitigates rogue DHCP server (DHCP spoofing) attacks?",
+    "options": ["DHCP snooping", "Port security", "BPDU guard", "Storm control"],
+    "correctIndex": 0,
+    "explanation": "DHCP snooping trusts only designated ports for DHCP server replies, blocking rogue servers.",
+    "source": "Cisco CCNA 200-301 OCG, Security"
+  },
+  {
+    "id": "sec-005",
+    "topic": "security",
+    "difficulty": "medium",
+    "prompt": "How does a router process the entries in an access control list (ACL)?",
+    "options": ["Bottom-up, last match wins", "Top-down, first match wins", "In order of subnet size", "Randomly"],
+    "correctIndex": 1,
+    "explanation": "ACLs are evaluated top-down and stop at the first matching entry.",
+    "source": "Cisco CCNA 200-301 OCG, ACLs"
+  },
+  {
+    "id": "sec-006",
+    "topic": "security",
+    "difficulty": "easy",
+    "prompt": "What is the implicit final entry at the end of every Cisco ACL?",
+    "options": ["permit any", "deny any (implicit deny all)", "log all", "permit established"],
+    "correctIndex": 1,
+    "explanation": "Every ACL ends with an invisible 'deny any', so unmatched traffic is dropped.",
+    "source": "Cisco CCNA 200-301 OCG, ACLs"
+  },
+  {
+    "id": "sec-007",
+    "topic": "security",
+    "difficulty": "medium",
+    "prompt": "Which switch feature limits the MAC addresses allowed on an access port to mitigate MAC flooding?",
+    "options": ["Port security", "DHCP snooping", "Dynamic ARP inspection", "VTP"],
+    "correctIndex": 0,
+    "explanation": "Port security restricts which/how many MAC addresses a port accepts, mitigating CAM-table (MAC flooding) attacks.",
+    "source": "Cisco CCNA 200-301 OCG, Port Security"
+  }
+]

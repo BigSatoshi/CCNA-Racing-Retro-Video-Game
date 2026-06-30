@@ -1,0 +1,280 @@
+/* Retro theme for CCNA Racing. Consistent palette across menu, track HUD, and overlay. */
+
+:root {
+  --bg: #0d0221;
+  --bg2: #241734;
+  --pink: #ff2e97;
+  --yellow: #f9f871;
+  --green: #2ee6a6;
+  --cyan: #6cf6ff;
+  --text: #f4f4f8;
+  --dim: #9b8fb0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Courier New", monospace;
+}
+
+#app {
+  height: 100%;
+}
+
+/* ---- Screen routing: only .is-active is shown ---- */
+.screen {
+  display: none;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.screen.is-active {
+  display: flex;
+}
+
+/* ---- Panels (menus / loading / error / result) ---- */
+.panel {
+  width: min(560px, 92vw);
+  text-align: center;
+  background: linear-gradient(180deg, var(--bg2), var(--bg));
+  border: 3px solid var(--pink);
+  border-radius: 12px;
+  box-shadow: 0 0 0 3px var(--bg), 0 0 28px rgba(255, 46, 151, 0.35);
+  padding: 32px 28px;
+}
+
+.logo {
+  margin: 0 0 8px;
+  letter-spacing: 4px;
+  font-size: 40px;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--pink);
+}
+.logo.error {
+  color: var(--pink);
+  text-shadow: 3px 3px 0 #000;
+}
+.tag {
+  color: var(--cyan);
+  margin: 0 0 18px;
+}
+.muted {
+  color: var(--dim);
+}
+.small {
+  font-size: 13px;
+}
+.blink {
+  animation: blink 1s steps(2, start) infinite;
+  color: var(--green);
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.howto {
+  text-align: left;
+  display: inline-block;
+  margin: 0 auto 22px;
+  padding-left: 18px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.howto b {
+  color: var(--yellow);
+}
+
+/* ---- Buttons ---- */
+.btn {
+  font-family: inherit;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--text);
+  background: var(--bg2);
+  border: 2px solid var(--cyan);
+  border-radius: 8px;
+  padding: 12px 22px;
+  margin: 8px 6px 0;
+  cursor: pointer;
+  transition: transform 0.05s ease, box-shadow 0.1s ease;
+}
+.btn:hover,
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 14px var(--cyan);
+  transform: translateY(-1px);
+}
+.btn.primary {
+  border-color: var(--green);
+  color: var(--green);
+}
+.btn.primary:hover,
+.btn.primary:focus-visible {
+  box-shadow: 0 0 16px var(--green);
+}
+
+/* ---- Game stage ---- */
+#screen-game {
+  align-items: center;
+}
+#stage {
+  position: relative;
+  width: 1000px;
+  max-width: 96vw;
+}
+#game-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 3px solid var(--pink);
+  border-radius: 10px;
+  background: var(--bg);
+  image-rendering: pixelated;
+}
+
+/* ---- HUD ---- */
+#hud {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(13, 2, 33, 0.78);
+  border: 2px solid var(--cyan);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-width: 150px;
+  font-size: 15px;
+}
+.hud-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  line-height: 1.5;
+}
+.hud-label {
+  color: var(--yellow);
+}
+
+/* ---- Question overlay (accessible dialog) ---- */
+#overlay-root:empty {
+  display: none;
+}
+.q-backdrop {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(13, 2, 33, 0.82);
+  border-radius: 10px;
+}
+.q-dialog {
+  width: min(640px, 92%);
+  background: linear-gradient(180deg, var(--bg2), var(--bg));
+  border: 3px solid var(--yellow);
+  border-radius: 12px;
+  padding: 22px 24px;
+  box-shadow: 0 0 28px rgba(249, 248, 113, 0.35);
+}
+.q-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.q-topic {
+  color: var(--cyan);
+  letter-spacing: 2px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.q-count {
+  color: var(--dim);
+  font-size: 13px;
+}
+.q-prompt {
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 6px 0 16px;
+}
+.q-options {
+  display: grid;
+  gap: 10px;
+}
+.q-opt {
+  font-family: inherit;
+  font-size: 15px;
+  text-align: left;
+  color: var(--text);
+  background: var(--bg);
+  border: 2px solid var(--cyan);
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+}
+.q-opt:hover,
+.q-opt:focus-visible {
+  outline: none;
+  box-shadow: 0 0 12px var(--cyan);
+}
+.q-opt .key {
+  color: var(--yellow);
+  margin-right: 8px;
+}
+.q-opt.correct {
+  border-color: var(--green);
+  box-shadow: 0 0 14px var(--green);
+}
+.q-opt.wrong {
+  border-color: var(--pink);
+  box-shadow: 0 0 14px var(--pink);
+}
+.q-opt:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+.q-feedback {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 2px dashed var(--dim);
+  line-height: 1.5;
+}
+.q-feedback.good {
+  border-color: var(--green);
+}
+.q-feedback.bad {
+  border-color: var(--pink);
+}
+.q-reward {
+  color: var(--green);
+  font-weight: bold;
+}
+.q-source {
+  color: var(--dim);
+  font-size: 12px;
+  margin-top: 6px;
+}
+.q-timer {
+  color: var(--dim);
+  font-size: 13px;
+}
+.result-order {
+  text-align: left;
+  display: inline-block;
+  margin: 6px auto 18px;
+  line-height: 1.8;
+}
+.result-order .you {
+  color: var(--green);
+  font-weight: bold;
+}

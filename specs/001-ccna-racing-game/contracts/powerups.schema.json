@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ccna-racing/powerups.schema.json",
+  "title": "Power-up / Weapon Definitions",
+  "type": "array",
+  "minItems": 4,
+  "maxItems": 4,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "name", "kind", "durationMs", "params", "icon"],
+    "properties": {
+      "id": { "type": "string", "enum": ["speed_boost", "shield", "oil_slick", "homing_missile"] },
+      "name": { "type": "string", "minLength": 1 },
+      "kind": { "type": "string", "enum": ["self", "offense"] },
+      "durationMs": { "type": "integer", "exclusiveMinimum": 0 },
+      "params": { "type": "object" },
+      "icon": { "type": "string", "minLength": 1 }
+    }
+  }
+}
