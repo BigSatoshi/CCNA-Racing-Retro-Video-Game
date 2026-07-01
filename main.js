@@ -127,12 +127,13 @@ function playerControls() {
   return { throttle: (up ? 1 : 0) + (down ? -1 : 0), steer: (right ? 1 : 0) + (left ? -1 : 0) };
 }
 
-function nearestOpponent(p) {
+// Nearest other car to `from` (any car, including the player — so AI can target them too).
+function nearestOpponent(from) {
   let best = null;
   let bestD = Infinity;
   for (const c of state.cars) {
-    if (c.isPlayer || c.finished) continue;
-    const d = Math.hypot(c.pos.x - p.pos.x, c.pos.y - p.pos.y);
+    if (c === from || c.finished) continue;
+    const d = Math.hypot(c.pos.x - from.pos.x, c.pos.y - from.pos.y);
     if (d < bestD) {
       bestD = d;
       best = c;
@@ -141,39 +142,60 @@ function nearestOpponent(p) {
   return best;
 }
 
-// US3 — activate an owned item (FR-015). Empty inventory is a harmless no-op.
-function useItem() {
-  if (state.screen !== Screen.RACING) return;
-  const p = player(state);
-  if (!p || p.finished || p.inventory.length === 0) return;
-  const def = powerMap[p.inventory.shift()];
+// US3 — activate an owned item (FR-015). Works for ANY car (player or AI); whoever owns
+// the item is the source. Empty inventory is a harmless no-op.
+function activateItem(car) {
+  if (!car || car.finished || car.inventory.length === 0) return;
+  const def = powerMap[car.inventory.shift()];
   const now = state.raceTimeMs;
   if (def.kind === 'self') {
-    applyEffect(def, p, null, now);
+    applyEffect(def, car, null, now);
   } else if (def.id === 'oil_slick') {
     state.hazards.push({
-      x: p.pos.x - Math.cos(p.heading) * 28,
-      y: p.pos.y - Math.sin(p.heading) * 28,
-      owner: p.id,
+      x: car.pos.x - Math.cos(car.heading) * 28,
+      y: car.pos.y - Math.sin(car.heading) * 28,
+      owner: car.id,
       expiresAt: now + 8000,
     });
   } else {
-    // homing_missile: launch a projectile that flies toward the nearest opponent and
+    // homing_missile: launch a projectile that flies toward the nearest other car and
     // applies its spin on impact (engine/items.js handles the shield cancel there).
-    const target = nearestOpponent(p);
+    const target = nearestOpponent(car);
     if (target) {
       state.missiles.push({
-        x: p.pos.x + Math.cos(p.heading) * 14,
-        y: p.pos.y + Math.sin(p.heading) * 14,
-        heading: p.heading,
+        x: car.pos.x + Math.cos(car.heading) * 14,
+        y: car.pos.y + Math.sin(car.heading) * 14,
+        heading: car.heading,
         speed: 520,
         targetId: target.id,
-        owner: p.id,
+        owner: car.id,
         expiresAt: now + 4000, // safety lifetime if it never connects
       });
     }
   }
+}
+
+// Player-triggered use (spacebar/F). Only the player answers questions to earn items.
+function useItem() {
+  if (state.screen !== Screen.RACING) return;
+  const p = player(state);
+  if (!p || p.inventory.length === 0) return;
+  activateItem(p);
   updateHudFromState();
+}
+
+// AI decides whether to spend its held item this frame. A brief hold after pickup keeps it
+// from firing the instant it grabs a token; missiles wait for a target in range, while
+// self-buffs and oil slicks fire as soon as the hold passes.
+function aiMaybeUseItem(car, now) {
+  if (car.inventory.length === 0) return;
+  if (car.aiItemHoldUntil && now < car.aiItemHoldUntil) return;
+  const def = powerMap[car.inventory[0]];
+  if (def.id === 'homing_missile') {
+    const target = nearestOpponent(car);
+    if (!target || Math.hypot(target.pos.x - car.pos.x, target.pos.y - car.pos.y) > 260) return;
+  }
+  activateItem(car);
 }
 
 // ---- Question flow (US2) --------------------------------------------------
@@ -220,8 +242,8 @@ function triggerQuestion(tokenIdx) {
 function onLap(car, now) {
   const lapTime = now - car.lapStartMs;
   car.lapStartMs = now;
+  respawnAll(state.tokens); // tokens respawn when any car starts a new lap (FR-006)
   if (car.isPlayer) {
-    respawnAll(state.tokens); // tokens respawn each new lap (FR-006)
     if (!state.bestLapMs || lapTime < state.bestLapMs) {
       state.bestLapMs = lapTime;
       localStorage.setItem(BEST_LAP_KEY, String(Math.round(lapTime)));
@@ -290,6 +312,7 @@ function update(dtMs) {
         .map((c) => ({ x: c.pos.x, y: c.pos.y }));
       controls = aiControls(car, t.aiWaypoints, { hazards: state.hazards, others });
       mods.speedMul *= rubberBand(car);
+      aiMaybeUseItem(car, now);
     }
     const prev = { x: car.pos.x, y: car.pos.y };
     stepCar(car, controls, dt, mods);
@@ -341,6 +364,21 @@ function update(dtMs) {
     }
   }
   state.missiles = state.missiles.filter((m) => m.expiresAt > now);
+
+  // AI collects a token -> no quiz (that's the player's learning mechanic). Instead the AI
+  // earns a random power-up ~65% of the time, mirroring the player's odds of answering
+  // correctly. Do this before the player check so a shared token goes to whoever touched it.
+  for (const car of state.cars) {
+    if (car.isPlayer || car.finished) continue;
+    const ci = checkCollect(state.tokens, car);
+    if (ci >= 0) {
+      consume(state.tokens, ci);
+      if (state.rng.next() < 0.65) {
+        car.inventory.push(pickReward(state.powerups, state.rng));
+        car.aiItemHoldUntil = now + 400 + state.rng.next() * 1200; // brief human-like delay
+      }
+    }
+  }
 
   // Player collects a token -> pause for a question (FR-013: ignored while one is open).
   const p = player(state);
