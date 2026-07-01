@@ -286,7 +286,10 @@ function update(dtMs) {
     if (car.isPlayer) {
       controls = playerControls();
     } else {
-      controls = aiControls(car, t.aiWaypoints, { hazards: state.hazards });
+      const others = state.cars
+        .filter((c) => c !== car && !c.finished)
+        .map((c) => ({ x: c.pos.x, y: c.pos.y }));
+      controls = aiControls(car, t.aiWaypoints, { hazards: state.hazards, others });
       mods.speedMul *= rubberBand(car);
     }
     const prev = { x: car.pos.x, y: car.pos.y };
