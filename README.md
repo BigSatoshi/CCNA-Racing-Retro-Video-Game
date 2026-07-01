@@ -25,7 +25,7 @@ python3 -m http.server 8000
 |-----|--------|
 | Arrow keys / WASD | Drive (accelerate, brake, steer) |
 | Space or F | Use your current power-up |
-| A / B / C / D or 1 / 2 / 3 / 4 (or click) | Answer a question |
+| 1 / 2 / 3 / 4 (or click) | Answer a question |
 
 After you answer, the race resumes automatically after a few seconds — no keypress needed.
 
