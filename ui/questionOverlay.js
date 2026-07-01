@@ -1,8 +1,6 @@
 // Accessible multiple-choice question overlay (T031). Keyboard-operable; the ~30s countdown
 // is cosmetic only (FR-024) — it never auto-submits, auto-fails, or affects scoring.
 
-const LETTERS = ['A', 'B', 'C', 'D'];
-
 // opts: {
 //   presentation, topic, index, total,
 //   onAnswer(displayIndex) -> { isCorrect, rewardName|null },   // host computes grade + reward
@@ -35,7 +33,7 @@ export function showQuestion(root, opts) {
   const buttons = p.displayOptions.map((opt, i) => {
     const b = el('button', 'q-opt');
     b.type = 'button';
-    b.innerHTML = `<span class="key">${LETTERS[i]}</span><span class="keynum">${i + 1}</span>`;
+    b.innerHTML = `<span class="key">${i + 1})</span>`;
     b.append(document.createTextNode(opt));
     b.addEventListener('click', () => choose(i));
     optionsWrap.appendChild(b);
@@ -65,9 +63,8 @@ export function showQuestion(root, opts) {
       if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
       return;
     }
-    // Accept the option letters (A–D) or the number keys (1–4).
-    let idx = LETTERS.indexOf(e.key.toUpperCase());
-    if (idx < 0 && /^[1-4]$/.test(e.key)) idx = Number(e.key) - 1;
+    // Accept the number keys (1–4).
+    const idx = /^[1-4]$/.test(e.key) ? Number(e.key) - 1 : -1;
     if (idx >= 0 && idx < buttons.length) {
       e.preventDefault();
       choose(idx);
@@ -91,7 +88,7 @@ export function showQuestion(root, opts) {
     const head = el('div');
     head.innerHTML = isCorrect
       ? `<b style="color:var(--green)">Correct!</b> ${rewardName ? `You earned <span class="q-reward">${rewardName}</span>.` : ''}`
-      : `<b style="color:var(--pink)">Not quite.</b> The answer is <b>${LETTERS[p.correctDisplayIndex]}</b>. No power-up this time.`;
+      : `<b style="color:var(--pink)">Not quite.</b> The answer is <b>${p.correctDisplayIndex + 1})</b>. No power-up this time.`;
     fb.appendChild(head);
     fb.appendChild(textEl('div', '', p.explanation));
     dialog.appendChild(fb);

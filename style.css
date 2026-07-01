@@ -230,12 +230,6 @@ body {
   color: var(--yellow);
   margin-right: 8px;
 }
-.q-opt .keynum {
-  color: var(--cyan);
-  opacity: 0.7;
-  font-size: 12px;
-  margin-right: 8px;
-}
 .q-opt.correct {
   border-color: var(--green);
   box-shadow: 0 0 14px var(--green);
