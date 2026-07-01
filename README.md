@@ -1,5 +1,7 @@
 # CCNA Racing Retro Video Game
 
+![CCNA Racing Retro Video Game](Image/ChatGPT%20Image%20Jul%201,%202026,%2002_58_14%20AM.png)
+
 A top-down, retro arcade racer that teaches **CCNA networking**. You race three AI cars over
 3 laps. Power-up tokens (`?`) sit on the track — grab one and the race **pauses** for a CCNA
 multiple-choice question. Answer correctly to win a random power-up or weapon; answer wrong and
