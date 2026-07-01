@@ -8,10 +8,14 @@ const LETTERS = ['A', 'B', 'C', 'D'];
 //   onAnswer(displayIndex) -> { isCorrect, rewardName|null },   // host computes grade + reward
 //   onClose(isCorrect)                                          // resume the race
 // }
+const RESUME_DELAY_S = 3; // auto-resume the race this long after an answer (no keypress needed)
+
 export function showQuestion(root, opts) {
   const { presentation: p, topic, index, total, onAnswer, onClose } = opts;
   let answered = false;
+  let done = false;
   let timerId = null;
+  let resumeId = null;
 
   root.innerHTML = '';
 
@@ -55,11 +59,10 @@ export function showQuestion(root, opts) {
   }, 1000);
 
   function onKey(e) {
+    // Once answered, swallow keys so a stray Enter/Space can't bleed into the
+    // race (which auto-resumes on its own after a short delay).
     if (answered) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        finish();
-      }
+      if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
       return;
     }
     const idx = LETTERS.indexOf(e.key.toUpperCase());
@@ -91,17 +94,32 @@ export function showQuestion(root, opts) {
     fb.appendChild(textEl('div', '', p.explanation));
     dialog.appendChild(fb);
 
-    const cont = el('button', 'btn primary');
-    cont.type = 'button';
-    cont.textContent = 'CONTINUE';
-    cont.addEventListener('click', finish);
-    dialog.appendChild(cont);
-    cont.focus();
+    // Auto-resume after a short delay so the player doesn't have to press a key
+    // (a stray Enter/Space used to leak into the race). Purely cosmetic — the
+    // race stays fully paused until finish() runs.
+    const resumeNote = textEl('div', 'q-resume', '');
+    dialog.appendChild(resumeNote);
+    let left = RESUME_DELAY_S;
+    const renderResume = () => {
+      resumeNote.textContent = `Resuming in ${left}…`;
+    };
+    renderResume();
+    resumeId = setInterval(() => {
+      left -= 1;
+      if (left <= 0) {
+        finish();
+        return;
+      }
+      renderResume();
+    }, 1000);
   }
 
   function finish() {
+    if (done) return;
+    done = true;
     document.removeEventListener('keydown', onKey);
     clearInterval(timerId);
+    clearInterval(resumeId);
     const wasCorrect = root.querySelector('.q-feedback.good') !== null;
     root.innerHTML = '';
     onClose(wasCorrect);
