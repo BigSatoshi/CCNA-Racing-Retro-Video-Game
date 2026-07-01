@@ -34,8 +34,10 @@ export function stepCar(car, controls, dtSec, mods = {}) {
   let steer = controls.steer ?? 0;
 
   if (mods.spun) {
-    // spun out: no driver control, bleed speed, rotate
-    car.speed *= 0.95;
+    // spun out: no driver control and the car whips around, but it keeps its
+    // momentum and slides — a spin-out, not a dead stop. Decay is dt-scaled so
+    // the car resumes driving the instant the effect expires.
+    car.speed *= Math.pow(0.6, dtSec);
     car.heading += 7 * dtSec;
   } else {
     if (throttle > 0) car.speed += CAR.accel * throttle * dtSec;
@@ -50,6 +52,39 @@ export function stepCar(car, controls, dtSec, mods = {}) {
   car.pos.x += Math.cos(car.heading) * car.speed * dtSec;
   car.pos.y += Math.sin(car.heading) * car.speed * dtSec;
   return car;
+}
+
+function hasShield(car) {
+  return (car.activeEffects || []).some((e) => e.id === 'shield');
+}
+
+// Car-to-car bump (pure): if two cars overlap (centers within minDist), shove them
+// apart along the contact normal and bleed the speed of any car that ISN'T shielded.
+// A shield makes you immune — you neither slow down nor get pushed off your line; the
+// other car absorbs the whole separation. Returns true if a collision was resolved.
+export function resolveCarCollision(a, b, minDist = 24) {
+  const dx = b.pos.x - a.pos.x;
+  const dy = b.pos.y - a.pos.y;
+  const dist = Math.hypot(dx, dy);
+  if (dist === 0 || dist >= minDist) return false;
+  const nx = dx / dist;
+  const ny = dy / dist;
+  const overlap = minDist - dist;
+  const aShield = hasShield(a);
+  const bShield = hasShield(b);
+
+  // An immune (shielded) car holds its ground; the other absorbs the overlap.
+  let aMove, bMove;
+  if (aShield && !bShield) { aMove = 0; bMove = overlap; }
+  else if (bShield && !aShield) { aMove = overlap; bMove = 0; }
+  else { aMove = overlap / 2; bMove = overlap / 2; }
+  a.pos.x -= nx * aMove; a.pos.y -= ny * aMove;
+  b.pos.x += nx * bMove; b.pos.y += ny * bMove;
+
+  // Only the unshielded cars take the speed hit from the bump.
+  if (!aShield) a.speed *= 0.55;
+  if (!bShield) b.speed *= 0.55;
+  return true;
 }
 
 // Closest point to p on segment a->b (clamped to the segment ends).

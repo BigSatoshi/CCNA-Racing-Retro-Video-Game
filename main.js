@@ -5,7 +5,7 @@
 import { createState, Screen, player } from './engine/state.js';
 import { createRng } from './engine/rng.js';
 import { createLoop } from './engine/loop.js';
-import { createCar, stepCar, constrainToTrack } from './engine/physics.js';
+import { createCar, stepCar, constrainToTrack, resolveCarCollision } from './engine/physics.js';
 import { aiControls, normalizeAngle } from './engine/ai.js';
 import { advanceProgress, finishOrder, snapshot, resume } from './engine/race.js';
 import { createTokens, checkCollect, consume, respawnAll } from './engine/tokens.js';
@@ -304,6 +304,17 @@ function update(dtMs) {
         if (sIdx >= 0) eff.splice(sIdx, 1);
         else if (!eff.some((e) => e.id === 'spin')) eff.push({ id: 'spin', expiresAt: now + 1300 });
         h.expiresAt = 0;
+      }
+    }
+  }
+
+  // Car-to-car bumps: shove any overlapping pair apart and bleed their speed, then
+  // keep them on the road. A shielded car is immune (no push, no slowdown).
+  for (let i = 0; i < state.cars.length; i++) {
+    for (let j = i + 1; j < state.cars.length; j++) {
+      if (resolveCarCollision(state.cars[i], state.cars[j])) {
+        constrainToTrack(state.cars[i], t);
+        constrainToTrack(state.cars[j], t);
       }
     }
   }
