@@ -275,10 +275,9 @@ function update(dtMs) {
   for (const car of state.cars) {
     tickEffects(car, now);
     if (car.finished) {
-      car.speed *= Math.pow(0.85, dt);
-      car.pos.x += Math.cos(car.heading) * car.speed * dt;
-      car.pos.y += Math.sin(car.heading) * car.speed * dt;
-      constrainToTrack(car, t);
+      // A finished opponent leaves the track: freeze it and let render hide it.
+      // (The player finishing ends the race, so this only affects CPUs.)
+      car.speed = 0;
       continue;
     }
     const mods = effectMods(car);
@@ -314,7 +313,9 @@ function update(dtMs) {
   // Car-to-car bumps: shove any overlapping pair apart and bleed their speed, then
   // keep them on the road. A shielded car is immune (no push, no slowdown).
   for (let i = 0; i < state.cars.length; i++) {
+    if (state.cars[i].finished) continue; // a finished car has left the track
     for (let j = i + 1; j < state.cars.length; j++) {
+      if (state.cars[j].finished) continue;
       if (resolveCarCollision(state.cars[i], state.cars[j])) {
         constrainToTrack(state.cars[i], t);
         constrainToTrack(state.cars[j], t);

@@ -57,10 +57,12 @@ export function render(ctx, state, now) {
   // Tokens.
   if (tokens) for (const t of tokens) if (t.available) drawToken(ctx, t.pos, now);
 
-  // Cars (player first index, then CPUs).
+  // Cars (player first index, then CPUs). A finished opponent has left the track,
+  // so it's no longer drawn — the cpu color index still advances to keep colors stable.
   let cpu = 0;
   for (const car of cars) {
     const color = car.isPlayer ? PALETTE.player : PALETTE.cpu[cpu++ % PALETTE.cpu.length];
+    if (car.finished && !car.isPlayer) continue;
     drawCar(ctx, car, color);
   }
 
