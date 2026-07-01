@@ -35,7 +35,7 @@ export function showQuestion(root, opts) {
   const buttons = p.displayOptions.map((opt, i) => {
     const b = el('button', 'q-opt');
     b.type = 'button';
-    b.innerHTML = `<span class="key">${LETTERS[i]}</span>`;
+    b.innerHTML = `<span class="key">${LETTERS[i]}</span><span class="keynum">${i + 1}</span>`;
     b.append(document.createTextNode(opt));
     b.addEventListener('click', () => choose(i));
     optionsWrap.appendChild(b);
@@ -65,8 +65,10 @@ export function showQuestion(root, opts) {
       if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
       return;
     }
-    const idx = LETTERS.indexOf(e.key.toUpperCase());
-    if (idx >= 0) {
+    // Accept the option letters (A–D) or the number keys (1–4).
+    let idx = LETTERS.indexOf(e.key.toUpperCase());
+    if (idx < 0 && /^[1-4]$/.test(e.key)) idx = Number(e.key) - 1;
+    if (idx >= 0 && idx < buttons.length) {
       e.preventDefault();
       choose(idx);
     }

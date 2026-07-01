@@ -25,7 +25,7 @@ python3 -m http.server 8000
 |-----|--------|
 | Arrow keys / WASD | Drive (accelerate, brake, steer) |
 | Space or F | Use your current power-up |
-| A / B / C / D (or click) | Answer a question |
+| A / B / C / D or 1 / 2 / 3 / 4 (or click) | Answer a question |
 | Enter / Space | Continue after answering |
 
 Everything is keyboard-operable.
